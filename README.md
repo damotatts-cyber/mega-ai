@@ -34,7 +34,7 @@ this is a high grade mega ai platform which is capable of completion in any situ
    Default local values (already in `.env.example`):
 
    ```env
-   POSTGRES_URL=postgresql://postgres:${POSTGRES_PASSWORD:-postgres}@localhost:5432/mega_ai
+   POSTGRES_URL=postgresql://postgres:localdev@localhost:5432/mega_ai
    REDIS_URL=redis://localhost:6379
    ```
 
@@ -61,6 +61,13 @@ this is a high grade mega ai platform which is capable of completion in any situ
 
 ```bash
 pnpm dev:down
+```
+
+`dev:down` stops/removes containers but keeps named volumes so Postgres/Redis data persists.
+To reset local data completely, run:
+
+```bash
+docker compose down -v
 ```
 
 ## Database migrations and seeding

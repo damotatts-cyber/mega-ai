@@ -25,10 +25,12 @@ if docker compose version >/dev/null 2>&1; then
   compose() {
     docker compose "$@"
   }
+  compose_logs_command="docker compose logs postgres"
 elif command -v docker-compose >/dev/null 2>&1; then
   compose() {
     docker-compose "$@"
   }
+  compose_logs_command="docker-compose logs postgres"
 else
   echo "❌ Docker Compose is required (docker compose or docker-compose)." >&2
   exit 1
@@ -58,8 +60,11 @@ if [ -z "$postgres_container_id" ]; then
 fi
 
 echo "⏳ Waiting for PostgreSQL to become healthy..."
+poll_interval_seconds=2
+max_wait_seconds=120
 attempt=1
-max_attempts=60
+max_attempts=$((max_wait_seconds / poll_interval_seconds))
+postgres_status=""
 while [ "$attempt" -le "$max_attempts" ]; do
   postgres_status=$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$postgres_container_id" 2>/dev/null || true)
 
@@ -72,13 +77,13 @@ while [ "$attempt" -le "$max_attempts" ]; do
     exit 1
   fi
 
-  sleep 2
+  sleep "$poll_interval_seconds"
   attempt=$((attempt + 1))
 done
 
 if [ "$postgres_status" != "healthy" ]; then
   echo "❌ Timed out waiting for PostgreSQL health check." >&2
-  echo "   Run compose logs for the postgres service for details." >&2
+  echo "   Run '$compose_logs_command' for details." >&2
   exit 1
 fi
 
