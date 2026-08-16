@@ -66,9 +66,9 @@ pnpm dev:down
 `dev:down` stops/removes containers but keeps named volumes so Postgres/Redis data persists.
 To reset local data completely, run:
 
-```bash
-docker compose down -v
-```
+    docker compose down -v
+    # or (legacy Docker Compose):
+    docker-compose down -v
 
 ## Database migrations and seeding
 
