@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
+    "dev:setup": "sh scripts/setup-local.sh",
+    "dev:down": "docker compose down",
     "build": "tsx lib/db/migrate && next build",
     "start": "next start",
     "lint": "npx ultracite@latest check",
