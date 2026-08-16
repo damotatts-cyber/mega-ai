@@ -16,6 +16,12 @@ require_command docker
 require_command pnpm
 require_command node
 
+pnpm_version_major=$(pnpm -v | cut -d. -f1)
+if [ "$pnpm_version_major" -lt 9 ]; then
+  echo "❌ pnpm 9+ is required. Found $(pnpm -v)" >&2
+  exit 1
+fi
+
 if ! docker info >/dev/null 2>&1; then
   echo "❌ Docker is not running. Start Docker Desktop/daemon and try again." >&2
   exit 1
